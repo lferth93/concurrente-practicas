@@ -176,13 +176,13 @@ int main() {
         generarSudoku(sudoku[i]);
     }
     for(int i = 0; i < Z; i++){
-        printf("Sudoku %d:\n", i + 1);
+        printf("\n\xF0\x9F\x94\xB9 Sudoku #%d:\n", i + 1);
         printSudoku(sudoku[i]);
         if (resolverSudoku(sudoku[i])) {
-            printf("Sudoku resuelto %d:\n", i + 1);
+            printf("\n\xE2\x9C\x85 Solución:\n");
             printSudoku(sudoku[i]);
         } else {
-            printf("No se pudo resolver el Sudoku %d\n", i + 1);
+            printf("\n\xE2\x9D\x8C No tiene solución.\n");
         }
 
     }
