@@ -26,19 +26,37 @@ void cesar(int llave, FILE *entrada){
     }
 }
 
+void print_ayuda(char *programa){
+    printf("Uso 1: %s <opcion> <archivo>\n", programa);
+    printf("Uso 2: %s <opcion> <archivo> <llave>\n", programa);
+    printf("Opciones:\n");
+    printf("  -c: Cifrar el archivo\n");
+    printf("  -d: Descifrar el archivo\n");
+}
+
+
 int main(int argc, char *argv[]) {
-    if(argc < 2){
-        printf("Uso 1: %s <archivo>\n", argv[0]);
-        printf("Uso 2: %s <archivo> <llave>\n", argv[0]);
+    int llave = 6;
+    char *archivo = NULL;
+    if(argc < 3){
+        print_ayuda(argv[0]);
         return 1;
     }
-    char *archivo = argv[1];
-    int llave = 6;
+
+    if(argv[1][0] != '-' || (argv[1][1] != 'c' && argv[1][1] != 'd')){
+        print_ayuda(argv[0]);
+        return 1;
+    }
+    archivo = argv[2];
 
     // Se verifica si se proporcionó una llave como argumento, 
     // si es así, se convierte a entero y se toma el módulo 26
-    if(argc >= 3){
-        llave = atoi(argv[2]) % 26;
+    if(argc >= 4){
+        llave = atoi(argv[3]) % 26;
+    }
+
+    if (argv[1][1] == 'd') {
+        llave = 26 - llave;
     }
 
     // Se abre el archivo de entrada en modo lectura
@@ -50,7 +68,11 @@ int main(int argc, char *argv[]) {
     }
 
     // Se imprime el mensaje cifrado
-    printf("El mensaje cifrado del archivo %s es:\n", archivo);
+    if (argv[1][1] == 'c') {
+        printf("El mensaje cifrado del archivo %s es:\n", archivo);
+    } else {
+        printf("El mensaje descifrado del archivo %s es:\n", archivo);
+    }
     cesar(llave, entrada);
     printf("\n");
     // Se cierra el archivo de entrada
