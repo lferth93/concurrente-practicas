@@ -55,6 +55,8 @@ int main(int argc, char *argv[]) {
         llave = atoi(argv[3]) % 26;
     }
 
+    // Para decifrar es suficiente con ejecutar el cifrado, 
+    // pero con la llave 26 - llave
     if (argv[1][1] == 'd') {
         llave = 26 - llave;
     }
