@@ -41,6 +41,7 @@ int sudoku[N][N] = {
     {0, 0, 0, 0, 8, 0, 0, 7, 9}
 };
 
+// Función para verificar si es posible colocar un número en una celda
 bool esSeguro(int sudoku[N][N], int fila, int col, int num) {
     // Verificacion de fila y columna
     for (int i = 0; i < N; i++) {
@@ -49,7 +50,7 @@ bool esSeguro(int sudoku[N][N], int fila, int col, int num) {
         }
     }
 
-    // Verificacion de tablero
+    // Verificacion de bloque 3x3
     int it = fila - fila % 3;
     int jt = col - col % 3;
     for (int i = it; i < it + 3; i++) {
@@ -62,8 +63,8 @@ bool esSeguro(int sudoku[N][N], int fila, int col, int num) {
     return true;
 }
 
+// Función para resolver el sudoku usando backtracking
 bool resolverSudoku(int sudoku[N][N]){
-    
     bool encontrado = false;
     int fila = 0;
     int col = 0;
