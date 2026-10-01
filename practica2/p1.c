@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Para decifrar es suficiente con ejecutar el cifrado, 
-    // pero con la llave 26 - llave
+    // pero con llave = 26 - llave
     if (argv[1][1] == 'd') {
         llave = 26 - llave;
     }
