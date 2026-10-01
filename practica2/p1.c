@@ -22,7 +22,7 @@ void cesar(int llave, FILE *entrada){
         if(a != 0){
             c = (c - a + llave) % 26 + a;
         }
-        putchar(c);
+        printf("%c", c);
     }
 }
 
