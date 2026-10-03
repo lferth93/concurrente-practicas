@@ -1,0 +1,221 @@
+\documentclass {article}
+
+\usepackage [utf8]{inputenc}
+\usepackage {graphicx}
+\usepackage {listings}
+\usepackage [spanish]{babel}
+\usepackage {color}
+
+\lstdefinestyle{mystyle}{ 
+    backgroundcolor=\color{white}, 
+    commentstyle=\color{green}, 
+    keywordstyle=\color{blue}, 
+    basicstyle=\footnotesize\ttfamily,
+    numbers=left,
+    numberstyle=\tiny,
+    frame=single,
+    breaklines=true
+}
+
+\lstset{style=mystyle}
+
+\author{Luis Fernando Torres Hernández}
+\title{Practica 2}
+\date{\today}
+\def\description{Cifrado Cesar y listas ligadas simples.}
+
+\makeatletter 
+\def\@maketitle{ 
+    \raggedright
+    \includegraphics[scale=0.5]{logo.png}\\[8ex] 
+    \vspace{1.0cm}
+\begin{center} {
+    \Huge 
+    \bfseries
+    \sffamily \@title }\\[4ex] {\Large \@author}\\[4ex] 
+    \@date\\[8ex]
+    \vspace{1.0cm}
+    \Large\description
+    \newpage
+\end{center}} 
+\makeatother
+
+\begin{document}
+\maketitle
+
+
+\section {Introducción}
+El cifrado Cesar es uno de los primeros métodos para ocultar 
+información que se conocen, su funcionamiento es sencillo, 
+consiste en un desplazamiento circular del alfabeto. Dadas las
+capacidades de computo actuales este cifrado es débil a un 
+ataque de fuerza bruta.
+
+Las Listas ligadas simples son una estructura de datos que permite
+almacenar datos de forma dinámica, permite insertar elementos 
+sin un limite mas que el de la memoria disponible para nuestro 
+programa.
+
+\section {Desarrollo}
+Esta practica se desarrollo en dos partes, la primera consiste en
+un programa escrito en C que implementa el cifrado Cesar y la segunda
+parte consiste en un programa que implementa una lista ligada simple
+y algunos métodos para manipularla.
+
+\subsection{Parte 1}
+
+El programa desarrollado para el cifrado Cesar tiene 2 argumentos 
+obligatorios, el primero es una opción que determina el comportamiento 
+del programa \texttt{-c} para cifrar y \texttt{-d} para descifrar,
+el segundo argumento es un archivo que contiene el texto que nuestro 
+programa va a manipular, el tercer argumento es opcional y es un número 
+que indica el desplazamiento que se aplicara al alfabeto, la 
+Figura \ref{fig:argumentos} muestra como se manejan estos argumentos
+dentro del código.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{lstlisting}[language=C]
+if(argc < 3){
+    print_ayuda(argv[0]);
+    return 1;
+}    
+
+if(argv[1][0] != '-' || (argv[1][1] != 'c' && argv[1][1] != 'd')){
+    print_ayuda(argv[0]);
+    return 1;
+}
+archivo = argv[2];
+
+if(argc >= 4){
+    llave = atoi(argv[3]) % 26;
+}
+    
+    \end{lstlisting}
+    \caption{Manejo de argumentos en archivo p1.c}
+    \label{fig:argumentos}
+\end{figure}
+
+El cifrado y descifrado son exactamente iguales, la única 
+diferencia esta en el desplazamiento que se aplica. Dado este 
+comportamiento el programa establece la llave del cifrado en 
+\texttt{llave = 26 - llave} cuando se desea descifrar.
+
+La Figura \ref{fig:cifrado} muestra la función que realiza el
+cifrado y descifrado, esta función recibe un archivo previamente
+abierto y un desplazamiento. escribe el resultado en la salida 
+estándar.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{lstlisting}[language=C]
+void cesar(int llave, FILE *entrada){
+    char a, c;
+    a = 0;
+    // Mientras el caracter actual no sea EOF 
+    while(!feof(entrada)){
+        a = 0;
+        // Se lee un caracter del archivo de entrada
+        char c = fgetc(entrada);
+        if(c == EOF) break; 
+
+        // El caracter leido es una mayuscula
+        if(c >= 'A' && c <= 'Z'){
+            a = 'A';
+        } else if(c >= 'a' && c <= 'z'){
+            a = 'a';
+        }
+        if(a != 0){
+            c = (c - a + llave) % 26 + a;
+        }
+        printf("%c", c);
+    }
+}
+        
+    \end{lstlisting}
+    \caption{Función de cifrado y descifrado}
+    \label{fig:cifrado}
+\end{figure}
+
+\subsection{Parte 2}
+La segunda parte de la práctica consiste realizar una 
+implementación de una lista ligada simple. La implementación 
+implica la definición de dos estructuras (\texttt{struct}), 
+una para los nodos que conforman la lista y otra para llevar 
+el control del primer elemento, estas estructuras se pueden 
+ver en la Figura \ref{fig:structs}. Todos los métodos que manipulan
+la lista se implementaron mediante funciones que reciben un 
+apuntador a una lista como primer argumento, esto permite separar
+la lógica de cada método del código de la aplicación principal.
+
+\begin{figure}
+    \centering
+    \begin{lstlisting}[language=C]
+typedef struct nodo {
+    int dato;
+    struct nodo *siguiente;
+}nodo;
+
+typedef struct {
+    nodo *inicio;
+}lista;
+    \end{lstlisting}
+    \caption{Definición de estructuras para la lista ligada simple}
+    \label{fig:structs}
+\end{figure}
+
+Los métodos implementados son los siguientes:
+\begin{itemize}
+    \item \texttt{insertar(lista *l, int dato)}: 
+    Inserta un elemento en la lista manteniendo el orden 
+    ascendente de los elementos.
+
+    \item \texttt{desplegar(lista *l)}: 
+    Muestra los elementos de la lista en salida estándar.
+
+    \item \texttt{consultar(lista *l, int index)}:
+    Regresa un apuntador al elemento en la posición \texttt{index} 
+    de la lista, regresa \texttt{NULL} si la posición no es válida.
+
+    \item \texttt{eliminar(lista *l, int index)}: Quita el nodo en la 
+    posición \texttt{index} de la lista, si la posición no es válida
+    no hace nada y regresa \texttt{NULL}, si la posición es válida 
+    regresa un apuntador al nodo eliminado.
+
+    \item \texttt{buscar(lista *l, int dato)}: 
+    Busca un elemento en la lista y regresa el índice donde se encuentra,
+    regresa -1 si el elemento no se encuentra en la lista.
+    
+    \item \texttt{buscar\_recursivo(nodo *n)}:
+    Busca un elemento en la lista de forma recursiva, regresa el índice
+    donde se encuentra, esta función tiene dos casos base, 
+    si el nodo actual es \texttt{NULL} regresa -1, si el nodo actual
+    contiene el dato buscado regresa 0, en caso contrario hace una llamada
+    recursiva al siguiente nodo y si el resultado es -1 regresa -1,
+    si el resultado es diferente de -1 regresa el resultado + 1.
+
+    \item \texttt{hacer\_nula(lista *l)}:
+    Esta función libera la memoria de todos los nodos de la lista y 
+    deja la lista vacía.
+
+    \item \texttt{hacer\_nula\_recursivo(nodo *n)}:
+    Esta función libera la memoria de todos los nodos de la lista de
+    forma recursiva, tiene un caso base que es cuando el nodo actual
+    es \texttt{NULL}, en este caso no hace nada y regresa, en caso 
+    contrario hace una llamada recursiva al siguiente nodo y después 
+    libera la memoria del nodo actual.
+\end{itemize}
+
+\section{Conclusiones}
+
+Esta practica es una buena forma de practicar el manejo de apuntadores
+y memoria dinámica en C, la implementación de algunos métodos son un 
+reto que incita a pensar en el manejo correcto de los apuntadores y las 
+funciones recursivas.
+
+La implementación del cifrado Cesar aunque es sencilla permite ejercitar
+el manejo de archivos y ejercitar los conocimientos básicos del lenguaje
+que mas adelante se usara para implementar algoritmos mas complejos que 
+impliquen el uso de concurrencia.
+
+\end{document}

@@ -170,6 +170,8 @@ int printMenu(){
     printf("Ingrese una opción: ");
     int opcion;
     scanf("%d", &opcion);
+    printf("\n");
+
     return opcion;
 }
 
@@ -179,7 +181,86 @@ int main(){
     int opcion = 0;
 
     while(opcion != 9){
-        printMenu();
+        opcion = printMenu();
+
+        switch(opcion){
+            case 1: {
+                int dato;
+                printf("Ingrese el elemento a insertar: ");
+                scanf("%d", &dato);
+                insertar(l, dato);
+                printf("Elemento %d insertado.\n", dato);
+                break;
+            }
+            case 2:
+                desplegar(l);
+                break;
+            case 3: {
+                int indice;
+                printf("Ingrese el índice del elemento a consultar: ");
+                scanf("%d", &indice);
+                nodo *n = consultar(l, indice);
+                if(n != NULL){
+                    printf("Elemento en el índice %d: %d\n", indice, n->dato);
+                } else {
+                    printf("No existe un elemento en el índice %d\n", indice);
+                }
+                break;
+            }
+            case 4: {
+                int dato;
+                printf("Ingrese el elemento a eliminar: ");
+                scanf("%d", &dato);
+                nodo *eliminado = eliminar(l, dato);
+                if(eliminado != NULL){
+                    printf("Elemento eliminado: %d\n", eliminado->dato);
+                    free(eliminado);
+                } else {
+                    printf("No se encontró el elemento %d para eliminar\n", dato);
+                }
+                break;
+            }
+            case 5: {
+                int dato;
+                printf("Ingrese el elemento a buscar: ");
+                scanf("%d", &dato);
+                int indice = buscar(l, dato);
+                if(indice != -1){
+                    printf("Elemento %d encontrado en el índice %d\n", dato, indice);
+                } else {
+                    printf("Elemento %d no encontrado\n", dato);
+                }
+                break;
+            }
+            case 6: {
+                int dato;
+                printf("Ingrese el elemento a buscar recursivamente: ");
+                scanf("%d", &dato);
+                int indice = buscar_recursivo(l->inicio, dato);
+                if(indice != -1){
+                    printf("Elemento %d encontrado en el índice %d (recursivo)\n", dato, indice);
+                } else {
+                    printf("Elemento %d no encontrado (recursivo)\n", dato);
+                }
+                break;
+            }
+            case 7:
+                hacer_nula(l);
+                printf("Lista hecha nula.\n");
+                break;
+            case 8:
+                hacer_nula_recursivo(l->inicio);
+                l->inicio = NULL; // Asegurarse de que la lista esté vacía después de la eliminación recurs
+                printf("Lista hecha nula recursivamente.\n");
+                break;
+            case 9:
+                printf("Saliendo del programa...\n");
+                break;
+            default:
+                printf("Opción inválida. Intente de nuevo.\n");
+                break;
+        }
+        printf("========================================\n");
     }
 
     return 0;
